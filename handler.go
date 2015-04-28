@@ -5,10 +5,18 @@ import (
 	"net/http"
 )
 
+const CACHE_DURATION = 120
+
 // Requests Twitch streams, answering with a filtered set.
 func streamHandler(w http.ResponseWriter, r *http.Request) {
 	// Always return JSON.
 	w.Header().Set("Content-Type", "application/json")
+
+	// Try getting a cached response.
+	if cached := GetCache("streams"); cached != nil {
+		w.Write(cached)
+		return
+	}
 
 	sr, err := GetTwitchStreams(channels)
 	if err != nil {
@@ -30,4 +38,5 @@ func streamHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	w.Write(b)
+	PutCache("streams", CACHE_DURATION, b)
 }

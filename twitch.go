@@ -27,3 +27,14 @@ func GetTwitchStreams(channels string) (sr TwitchStreamsResponse, err error) {
 	}
 	return
 }
+
+// Filters streams from `GetTwitchStreams` matching `gameFilter`.
+func FilterStreams(sr TwitchStreamsResponse) (items []ResponseItem) {
+	for _, stream := range sr.Streams {
+		if !gameFilter.MatchString(stream.Game) {
+			continue
+		}
+		items = append(items, ResponseItem{Name: stream.Channel.DisplayName, URL: stream.Channel.URL})
+	}
+	return
+}

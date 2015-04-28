@@ -24,18 +24,12 @@ func streamHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	var resitems []ResponseItem
-	for _, stream := range sr.Streams {
-		if !gameFilter.MatchString(stream.Game) {
-			continue
-		}
-		resitems = append(resitems, ResponseItem{Name: stream.Channel.DisplayName, URL: stream.Channel.URL})
-	}
+	resitems := FilterStreams(sr)
+	go UpdateLeague(resitems)
 
 	b, err := json.Marshal(resitems)
 	if err != nil || len(resitems) == 0 {
-		w.Write([]byte("[]"))
-		return
+		b = []byte("[]")
 	}
 	w.Write(b)
 	PutCache("streams", CACHE_DURATION, b)

@@ -1,11 +1,12 @@
 package main
 
 import (
-	redis "github.com/fzzy/radix/extra/pool"
 	"log"
 	"net/http"
 	"os"
 	"regexp"
+
+	redis "github.com/fzzy/radix/extra/pool"
 )
 
 var twitchClientId = os.Getenv("TWITCH_CLIENT_ID")
@@ -45,6 +46,6 @@ func main() {
 	})
 
 	port := os.Getenv("PORT")
-	log.Print("Listening on port " + port)
-	log.Fatal(http.ListenAndServe(":"+port, nil))
+	log.Print("Listening on " + port)
+	log.Fatal(http.ListenAndServe(port, nil))
 }
